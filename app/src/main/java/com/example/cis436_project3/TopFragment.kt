@@ -30,11 +30,16 @@ class TopFragment : Fragment() {
 
         val spinner = view.findViewById<Spinner>(R.id.catSpinner)
 
-        // Observe the spinner items from ViewModel
-        viewModel.spinnerItems.observe(viewLifecycleOwner, Observer { items ->
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
+        viewModel.catBreeds.observe(viewLifecycleOwner) { breeds ->
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, breeds)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
-        })
+        }
+
+        val catService = CatService(requireContext())
+        catService.getBreeds(
+            onSuccess = { breeds -> viewModel.setBreeds(breeds) },
+            onError = { error -> viewModel.setError(error) }
+        )
     }
 }
