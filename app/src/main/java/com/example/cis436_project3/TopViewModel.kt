@@ -5,13 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class TopViewModel : ViewModel() {
-    private val _catBreeds = MutableLiveData<List<String>>()
-    val catBreeds: LiveData<List<String>> = _catBreeds
+    private val _catBreeds = MutableLiveData<List<CatBreed>>()
+    val catBreeds: LiveData<List<CatBreed>> = _catBreeds
+
+    private val _selectedBreed = MutableLiveData<CatBreed>()
+    val selectedBreed: LiveData<CatBreed> = _selectedBreed
+
+    fun selectBreed(breed: CatBreed){
+        _selectedBreed.value = breed
+    }
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
-    fun setBreeds(breeds: List<String>) {
+    fun setBreeds(breeds: List<CatBreed>) {
         _catBreeds.value = breeds
     }
 
