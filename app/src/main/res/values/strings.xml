@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">cis436-project3</string>
+    <string name="cat_breed_image">Cat</string>
 </resources>

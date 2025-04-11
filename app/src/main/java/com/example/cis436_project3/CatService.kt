@@ -7,30 +7,38 @@ import com.android.volley.toolbox.Volley
 import com.android.volley.Request
 import com.android.volley.Response
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 
 class CatService(private val context: Context) {
-    data class CatBreed(
-        val id: String,
-        val name: String,
-        val temperament: String,
-        val origin: String
-    )
     private val apiKey = "live_TUoNAwuKAWoA9Taw4RdGOrs4XgMWbrYr1dgZHWKl8z470HLZ1stRNDM3gpm4TlFk"
 
-    fun getBreedImage(breedId: String, onSuccess: (String) -> Unit, onError: (String) -> Unit){
+    fun getBreedImage(breedId: String, onResponse: (String) -> Unit, onError: (String) -> Unit) {
         val url = "https://api.thecatapi.com/v1/images/search?breed_ids=$breedId&api_key=$apiKey"
-        val queue = Volley.newRequestQueue(context)
-        val request = StringRequest(Request.Method.GET, url,
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
             { response ->
-                val jsonArray = JSONArray(response)
-                val imageUrl = jsonArray.getJSONObject(0).getString("url")
-                onSuccess(imageUrl)
+                try {
+                    // Parse the response
+                    val jsonResponse = JSONArray(response)
+                    val imageUrl = jsonResponse.getJSONObject(0).getString("url")
+
+                    // Pass the image URL to onResponse callback
+                    onResponse(imageUrl)
+                } catch (e: JSONException) {
+                    Log.e("CatService", "JSON error: ${e.message}")
+                    onError("Error parsing the response.")
+                }
             },
             { error ->
-                onError("Failed to get image")
-            })
-        queue.add(request)
+                Log.e("CatService", "Error: ${error.message}")
+                onError("Failed to fetch data.")
+            }
+        )
+
+        // Add the request to the request queue
+        Volley.newRequestQueue(context).add(stringRequest)
     }
 
     fun getBreeds(onSuccess: (List<CatBreed>) -> Unit, onError: (String) -> Unit) {

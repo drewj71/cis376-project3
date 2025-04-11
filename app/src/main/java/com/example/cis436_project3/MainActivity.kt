@@ -19,7 +19,8 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.topFragment, TopFragment.newInstance())  // Replace container with TopFragment
+                .replace(R.id.topFragment, TopFragment.newInstance())
+                .replace(R.id.bottomFragment, BottomFragment.newInstance())
                 .commit()
         }
     }
